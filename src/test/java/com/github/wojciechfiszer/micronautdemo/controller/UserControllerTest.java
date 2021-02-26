@@ -21,8 +21,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @MicronautTest
 class UserControllerTest {
@@ -101,6 +100,38 @@ class UserControllerTest {
                     HttpRequest.PUT("/users/" + user.getId(), user),
                     User.class
             );
+        } catch (HttpClientResponseException e) {
+            expectedException = e;
+        }
+
+        // then
+        assertNotNull(expectedException);
+        assertEquals(HttpStatus.NOT_FOUND, expectedException.getStatus());
+    }
+
+    @Test
+    void testDeleteUserWhenUserExistsThenIsNoContent() {
+        // given
+        String id = "id";
+
+        // when
+        HttpResponse<?> response = client.toBlocking().exchange(HttpRequest.DELETE("/users/" + id));
+
+        // then
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatus());
+        verify(userService).deleteUser(eq(id));
+    }
+
+    @Test
+    void testDeleteUserWhenUserDoesNotExistThenIsNotFound() {
+        // given
+        String id = "id";
+        doThrow(new UserNotFoundException(id)).when(userService).deleteUser(eq(id));
+
+        // when
+        HttpClientResponseException expectedException = null;
+        try {
+            client.toBlocking().exchange(HttpRequest.DELETE("/users/" + id));
         } catch (HttpClientResponseException e) {
             expectedException = e;
         }

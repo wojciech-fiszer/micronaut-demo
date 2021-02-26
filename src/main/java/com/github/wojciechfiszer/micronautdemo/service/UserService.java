@@ -5,12 +5,17 @@ import lombok.RequiredArgsConstructor;
 
 import javax.inject.Singleton;
 import java.util.List;
+import java.util.Optional;
 
 @Singleton
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+
+    public Optional<User> getUser(String id) {
+        return userRepository.findById(id);
+    }
 
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -21,9 +26,18 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-        if (!userRepository.existsById(user.getId())) {
-            throw new UserNotFoundException(user.getId());
-        }
+        checkIfUserExists(user.getId());
         return userRepository.save(user);
+    }
+
+    public void deleteUser(String id) {
+        checkIfUserExists(id);
+        userRepository.deleteById(id);
+    }
+
+    private void checkIfUserExists(String id) {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
+        }
     }
 }

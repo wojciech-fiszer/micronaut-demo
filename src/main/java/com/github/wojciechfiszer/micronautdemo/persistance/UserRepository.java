@@ -7,7 +7,12 @@ import java.util.Optional;
 
 public interface UserRepository {
     boolean existsById(String id);
+
     Optional<User> findById(String id);
+
     List<User> findAll();
+
     User save(User user);
+
+    void deleteById(String id);
 }

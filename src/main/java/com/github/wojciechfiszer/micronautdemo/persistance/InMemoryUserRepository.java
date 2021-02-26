@@ -39,4 +39,9 @@ public class InMemoryUserRepository implements UserRepository {
         byId.put(id, user);
         return user;
     }
+
+    @Override
+    public void deleteById(String id) {
+        byId.remove(id);
+    }
 }
