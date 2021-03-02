@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 import javax.inject.Singleton;
 import java.util.List;
-import java.util.Optional;
 
 @Singleton
 @RequiredArgsConstructor
@@ -13,8 +12,8 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public Optional<User> getUser(String id) {
-        return userRepository.findById(id);
+    public User getUser(String id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
     public List<User> getUsers() {

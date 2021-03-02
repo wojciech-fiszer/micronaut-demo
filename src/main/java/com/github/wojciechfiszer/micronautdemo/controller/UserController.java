@@ -1,7 +1,6 @@
 package com.github.wojciechfiszer.micronautdemo.controller;
 
 import com.github.wojciechfiszer.micronautdemo.service.User;
-import com.github.wojciechfiszer.micronautdemo.service.UserNotFoundException;
 import com.github.wojciechfiszer.micronautdemo.service.UserService;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.*;
@@ -20,7 +19,7 @@ public class UserController {
     @Get("/{id}")
     HttpResponse<User> getUser(String id) {
         log.debug("Received a request for a user with id {}", id);
-        return HttpResponse.ok(userService.getUser(id).orElseThrow(() -> new UserNotFoundException(id)));
+        return HttpResponse.ok(userService.getUser(id));
     }
 
     @Get
